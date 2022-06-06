@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import StarList from '../StarList';
 import { LinearGradient } from 'expo-linear-gradient';
+import { url } from '../../../Context/container';
 
 
 const DienThoai = ({ navigation }) => {
@@ -18,11 +19,11 @@ const DienThoai = ({ navigation }) => {
     const [ListDienThoai, setListDienThoai] = useState([])
     useEffect(async () => {
         try {
-            const Res = await axios.get('https://mobile12346.herokuapp.com/product/phone')
+            const Res = await axios.get(`${url}/product/phone`)
             setListDienThoai(Res.data)
-            // const Res2 = await axios.get('https://mobile12346.herokuapp.com/home/phonehot')
+            // const Res2 = await axios.get('http://gotech.australiaeast.cloudapp.azure.com/home/phonehot')
             // setListDTNB(Res2.data)
-            // const Res3 = await axios.get('https://mobile12346.herokuapp.com/home/laphot')
+            // const Res3 = await axios.get('http://gotech.australiaeast.cloudapp.azure.com/home/laphot')
             // setListLTNB(Res3.data)
         } catch (e) {
         }
@@ -74,12 +75,13 @@ const DienThoai = ({ navigation }) => {
                                                 <TouchableOpacity onPress={() => {
                                                     navigation.navigate('ChiTietSP', { id: e.id })
                                                 }} key={e.id} style={{
+                                                    paddingTop: 50,
                                                     width: '47.7%',
                                                     position: 'relative',
                                                     justifyContent: 'center',
                                                     alignItems: 'center',
                                                     backgroundColor: '#000',
-                                                    height: 300,
+                                                    height: 280,
                                                     marginRight: 8,
                                                     marginTop: 8,
                                                     borderRadius: 10,

@@ -3,6 +3,7 @@ import { Link, Routes, Route, NativeRouter, useNavigate } from 'react-router-nat
 import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../../Context/Auth';
+import { url } from '../../../Context/container';
 const DiaChi = () => {
     const { authState } = useContext(AuthContext)
     const [modalVisible, setModalVisible] = useState(false);
@@ -20,7 +21,7 @@ const DiaChi = () => {
     const [listDiaChi, setListDiaChi] = useState()
     const [DiaChi, setDiaChi] = useState()
     useEffect(async () => {
-        const res = await axios.get('https://mobile12346.herokuapp.com/users/address', { headers: { Authorization: `Bearer ${authState.user.token}` } })
+        const res = await axios.get(`${url}/users/address`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
         if (res.data.address.success) {
             setDiaChi(res.data.address.data)
         }
@@ -29,7 +30,7 @@ const DiaChi = () => {
         }
     }, [])
     useEffect(async () => {
-        const res = await axios.get('https://mobile12346.herokuapp.com/users/address', { headers: { Authorization: `Bearer ${authState.user.token}` } })
+        const res = await axios.get(`${url}/users/address`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
         if (res.data.address.success) {
             setListDiaChi(res.data.listAddress)
         }
@@ -43,31 +44,40 @@ const DiaChi = () => {
             <View style={styles.Title}>
                 <Text style={styles.Title_Text} >THÔNG TIN GIAO HÀNG</Text>
             </View>
-            <View style={styles.ContentMain}>
+            <View style={{
+                backgroundColor: '#fff',
+                marginBottom: 10,
+                width: '94%',
+                flexDirection: 'row',
+                padding: 10,
+                alignItems: 'center',
+                justifyContent: 'space-between'
+            }}>
                 {!DiaChi && <View style={styles.Content} >
                     <Text>Đang tải...</Text>
                 </View>}
                 {DiaChi && Object.keys(DiaChi).length == 0 && <View style={styles.Content} >
                     <Text>Vui lòng cập nhật địa chỉ...</Text>
                 </View>}
-                {DiaChi && Object.keys(DiaChi).length != 0 && <View style={styles.Content} >
-                    <View style={styles.Content_Item}>
-                        <Text style={styles.Content_ItemLB}>Tên: </Text>
-                        <Text style={styles.Content_ItemText}>{DiaChi.Name}</Text>
-                    </View>
-                    <View style={styles.Content_Item}>
-                        <Text style={styles.Content_ItemLB}>SDT: </Text>
-                        <Text style={styles.Content_ItemText}>{DiaChi.PhoneNumber}</Text>
-                    </View>
-                    <View style={styles.Content_Item}>
-                        <Text style={styles.Content_ItemLB}>Địa Chỉ: </Text>
-                        <Text style={styles.Content_ItemText}>{DiaChi.Address}</Text>
-                    </View>
-                    <View style={styles.Content_Item}>
-                        <Text style={styles.Content_ItemLB}>Ghi chú: </Text>
-                        <Text style={styles.Content_ItemText}>{DiaChi.Note}</Text>
-                    </View>
-                </View>}
+                {DiaChi && Object.keys(DiaChi).length != 0 &&
+                    <View style={styles.Content} >
+                        <View style={styles.Content_Item}>
+                            <Text style={styles.Content_ItemLB}>Tên: </Text>
+                            <Text style={styles.Content_ItemText}>{DiaChi.Name}</Text>
+                        </View>
+                        <View style={styles.Content_Item}>
+                            <Text style={styles.Content_ItemLB}>SDT: </Text>
+                            <Text style={styles.Content_ItemText}>{DiaChi.PhoneNumber}</Text>
+                        </View>
+                        <View style={styles.Content_Item}>
+                            <Text style={styles.Content_ItemLB}>Địa Chỉ: </Text>
+                            <Text style={styles.Content_ItemText}>{DiaChi.Address}</Text>
+                        </View>
+                        <View style={styles.Content_Item}>
+                            <Text style={styles.Content_ItemLB}>Ghi chú: </Text>
+                            <Text style={styles.Content_ItemText}>{DiaChi.Note}</Text>
+                        </View>
+                    </View>}
 
                 <TouchableOpacity
                     onPress={() => {
@@ -122,11 +132,11 @@ const DiaChi = () => {
                                 marginBottom: 10
                             }}>
                                 <Text style={{
-                                    fontSize: 18,
+                                    fontSize: 17,
                                     fontWeight: '700',
                                     color: '#444',
 
-                                }}>Chọn Địa Chỉ</Text>
+                                }}>CHỌN ĐỊA CHỈ</Text>
                             </View>
                             {listDiaChi && listDiaChi.map((e) => {
                                 return (
@@ -138,7 +148,7 @@ const DiaChi = () => {
                                                 if (newList.length == 0)
                                                     setDiaChi({})
                                                 else setDiaChi(newList[0])
-                                                const res = await axios.delete(`https://mobile12346.herokuapp.com/users/deleteAddress/${e.id}`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
+                                                const res = await axios.delete(`${url}/users/deleteAddress/${e.id}`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
                                             }}
                                             style={{
                                                 position: 'absolute',
@@ -158,7 +168,7 @@ const DiaChi = () => {
                                         <TouchableOpacity onPress={async () => {
                                             setDiaChi(e)
                                             setModalVisible(false)
-                                            const res = await axios.patch(`https://mobile12346.herokuapp.com/users/pickaddress/${e.id}`, {}, { headers: { Authorization: `Bearer ${authState.user.token}` } })
+                                            const res = await axios.patch(`${url}/users/pickaddress/${e.id}`, {}, { headers: { Authorization: `Bearer ${authState.user.token}` } })
                                         }} style={styles.Content} >
                                             <View style={styles.Content_Item}>
                                                 <Text style={styles.Content_ItemLB}>Tên: </Text>
@@ -181,7 +191,7 @@ const DiaChi = () => {
                                             setSua('Sua')
                                             setDiaChiSua(e)
                                         }} style={styles.ContentControl}>
-                                            <Text style={styles.ContentControl_Text}> Sửa</Text>
+                                            <Text style={styles.ContentControl_Text}> SỬA</Text>
                                         </TouchableOpacity>
                                     </View>
                                 )
@@ -206,7 +216,7 @@ const DiaChi = () => {
                             }}>
                                 <Text style={{
                                     color: '#A60D0D'
-                                }}>Thêm Địa Chỉ</Text>
+                                }}>THÊM ĐỊA CHỈ</Text>
                             </TouchableOpacity>
                         </View>}
                         {Boolean(Sua == 'Sua') &&
@@ -238,10 +248,10 @@ const DiaChi = () => {
                                     alignItems: 'center',
                                 }}>
                                     <Text style={{
-                                        fontSize: 20,
+                                        fontSize: 17,
                                         fontWeight: '700',
                                         color: '#444',
-                                    }}>Sửa địa chỉ</Text>
+                                    }}>SỬA ĐỊA CHỈ</Text>
                                     <View style={{
                                         width: '94%',
                                         justifyContent: 'center',
@@ -293,8 +303,23 @@ const DiaChi = () => {
                                     }}>
                                         <TouchableOpacity onPress={() => {
                                             setSua('ChonDiaChi')
-                                        }} style={styles.Btn_Huy}>
-                                            <Text style={styles.Btn_Text}>Hủy</Text>
+                                        }} style={{
+                                            borderRadius: 2,
+                                            position: 'relative',
+                                            backgroundColor: '#fff',
+                                            width: 130,
+                                            height: 40,
+                                            marginRight: 10,
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            borderWidth: 1,
+                                            borderColor: '#000'
+                                        }}>
+                                            <Text style={{
+                                                color: '#000',
+                                                fontWeight: '700',
+                                            }}>HỦY</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             onPress={async () => {
@@ -307,10 +332,25 @@ const DiaChi = () => {
                                                     }
                                                 }
                                                 setListDiaChi(newListDC)
-                                                const res = await axios.patch(`https://mobile12346.herokuapp.com/users/updateAddress/${DiaChiSua.id}`, DiaChiSua, { headers: { Authorization: `Bearer ${authState.user.token}` } })
+                                                const res = await axios.patch(`${url}/users/updateAddress/${DiaChiSua.id}`, DiaChiSua, { headers: { Authorization: `Bearer ${authState.user.token}` } })
                                             }}
-                                            style={styles.Btn_XacNhan}>
-                                            <Text style={styles.Btn_Text}>Xác nhận</Text>
+                                            style={{
+                                                borderRadius: 2,
+                                                position: 'relative',
+                                                backgroundColor: '#fff',
+                                                width: 130,
+                                                height: 40,
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                borderWidth: 1,
+                                                borderColor: '#A60D0D'
+                                            }}>
+                                            <Text style={{
+                                                fontSize: 15,
+                                                fontWeight: '700',
+                                                color: '#A60D0D'
+                                            }}>XÁC NHẬN</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -345,10 +385,10 @@ const DiaChi = () => {
                                     alignItems: 'center',
                                 }}>
                                     <Text style={{
-                                        fontSize: 18,
+                                        fontSize: 17,
                                         color: '#444',
                                         fontWeight: '700'
-                                    }}>Thêm địa chỉ</Text>
+                                    }}>THÊM ĐỊA CHỈ</Text>
                                     <View style={{
                                         width: '94%',
                                         justifyContent: 'center',
@@ -400,21 +440,46 @@ const DiaChi = () => {
                                     }}>
                                         <TouchableOpacity onPress={() => {
                                             setSua('ChonDiaChi')
-                                        }} style={styles.Btn_Huy}>
-                                            <Text style={styles.Btn_Text}>Hủy</Text>
+                                        }} style={{
+                                            borderRadius: 2,
+                                            backgroundColor: '#fff',
+                                            width: 130,
+                                            height: 40,
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            borderWidth: 1,
+                                            borderColor: '#000',
+                                            marginRight: 10,
+                                        }}>
+                                            <Text style={{
+
+                                            }}>HỦY</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             onPress={async (e) => {
                                                 styles.Btn_XacNhan = { ...styles.Btn_XacNhan, backgroundColor: 'rgba(0,180,216,0.5)' }
-                                                const res = await axios.post('https://mobile12346.herokuapp.com/users/addAddress ', DiaChiThem, { headers: { Authorization: `Bearer ${authState.user.token}` } })
+                                                const res = await axios.post(`${url}/users/addAddress `, DiaChiThem, { headers: { Authorization: `Bearer ${authState.user.token}` } })
                                                 const newListDC = listDiaChi.slice()
                                                 setListDiaChi([...newListDC, { ...DiaChiThem, id: res.data.data }])
                                                 setSua('ChonDiaChi')
                                                 styles.Btn_XacNhan = { ...styles.Btn_XacNhan, backgroundColor: 'rgba(0,180,216,1)' }
                                             }
                                             }
-                                            style={styles.Btn_XacNhan}>
-                                            <Text style={styles.Btn_Text}>Xác nhận</Text>
+                                            style={{
+                                                borderRadius: 2,
+                                                backgroundColor: '#fff',
+                                                width: 130,
+                                                height: 40,
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                borderWidth: 1,
+                                                borderColor: '#A60D0D'
+                                            }}>
+                                            <Text style={{
+                                                color: '#A60D0D'
+                                            }}>XÁC NHẬN</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -438,8 +503,8 @@ const styles = StyleSheet.create({
     modalView: {
         width: '92%',
         margin: 20,
-        backgroundColor: "#eee",
-        borderRadius: 10,
+        backgroundColor: "#fff",
+        borderRadius: 5,
         padding: 10,
         alignItems: "center",
         shadowColor: "#000",
@@ -468,11 +533,12 @@ const styles = StyleSheet.create({
         color: '#000',
     },
     ContentMain: {
+        borderWidth: 1,
+        borderColor: '#bbb',
         backgroundColor: '#fff',
         marginBottom: 10,
         width: '94%',
         flexDirection: 'row',
-        borderRadius: 10,
         padding: 10,
         alignItems: 'center',
         justifyContent: 'space-between'
@@ -505,15 +571,16 @@ const styles = StyleSheet.create({
         color: '#A60D0D'
     },
     inputSua: {
-        marginTop: 10,
-        fontSize: 16,
-        padding: 10,
+        marginTop: 8,
+        fontSize: 17,
+        padding: 8,
         backgroundColor: '#fff',
         width: '100%',
-        height: 40,
+        height: 44,
         borderWidth: 1,
         borderColor: '#bbb',
-        borderRadius: 5,
+        borderRadius: 2,
+        color: '#777'
     },
     Btn_Huy: {
         width: 140,

@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import StarList from '../StarList';
 import { LinearGradient } from 'expo-linear-gradient';
+import { url } from '../../../Context/container';
 
 
 const Laptop = ({ navigation }) => {
@@ -18,11 +19,11 @@ const Laptop = ({ navigation }) => {
     const [ListLaptop, setListLaptop] = useState([])
     useEffect(async () => {
         try {
-            const Res = await axios.get('https://mobile12346.herokuapp.com/product/laptop')
+            const Res = await axios.get(`${url}/product/laptop`)
             setListLaptop(Res.data)
-            // const Res2 = await axios.get('https://mobile12346.herokuapp.com/home/phonehot')
+            // const Res2 = await axios.get('http://gotech.australiaeast.cloudapp.azure.com/home/phonehot')
             // setListDTNB(Res2.data)
-            // const Res3 = await axios.get('https://mobile12346.herokuapp.com/home/laphot')
+            // const Res3 = await axios.get('http://gotech.australiaeast.cloudapp.azure.com/home/laphot')
             // setListLTNB(Res3.data)
         } catch (e) {
             console.log(e)

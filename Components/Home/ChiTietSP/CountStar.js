@@ -36,7 +36,7 @@ const CountStar = ({ count, size }) => {
                             } />)
                     }
                     for (let i = 0; i <= 5 - count - 1; i++) {
-                        e.push(<Image key={5 + i++}
+                        e.push(<Image key={5 + i}
                             style={{
                                 marginLeft: 5,
                                 width: size,

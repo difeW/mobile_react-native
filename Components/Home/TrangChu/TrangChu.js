@@ -9,13 +9,12 @@ import axios from "axios";
 import StarList from "../StarList";
 import { AuthContext } from "../../../Context/Auth";
 import { LinearGradient } from 'expo-linear-gradient';
-
+import { CardContext } from "../../../Context/CardContext";
+import { url } from "../../../Context/container";
 
 
 const TrangChu = ({ navigation }) => {
     const [tabsearch, setTabsearch] = useState(false)
-    const refContainer1 = useRef(null);
-    const refContainer2 = useRef(null);
     const refContainer3 = useRef(null)
     const [Focus, setfocus] = useState(false)
     const [search, setSearch] = useState('')
@@ -23,6 +22,7 @@ const TrangChu = ({ navigation }) => {
     const [ListHotSale, setListHotSale] = useState([])
     const [ListDTNB, setListDTNB] = useState([])
     const [ListLTNB, setListLTNB] = useState([])
+    const { setCard } = useContext(CardContext)
     const [category, setCategory] = useState({
         phone: [],
         laptop: []
@@ -34,7 +34,7 @@ const TrangChu = ({ navigation }) => {
         }
         else {
             try {
-                const Res = await axios.get(`https://mobile12346.herokuapp.com/home/search/${search}`)
+                const Res = await axios.get(`${url}/home/search/${search}`)
                 setListSearch(Res.data)
             } catch (e) {
                 console.log([e])
@@ -42,9 +42,10 @@ const TrangChu = ({ navigation }) => {
 
         }
     }, [search])
+
     useEffect(async () => {
         try {
-            const Res1 = await axios.get('https://mobile12346.herokuapp.com/home/hotsale')
+            const Res1 = await axios.get(`${url}/home/hotsale`)
             setListHotSale(Res1.data)
 
         } catch (e) {
@@ -54,7 +55,7 @@ const TrangChu = ({ navigation }) => {
     }, [])
     useEffect(async () => {
         try {
-            const Res3 = await axios.get('https://mobile12346.herokuapp.com/home/laphot')
+            const Res3 = await axios.get(`${url}/home/laphot`)
             setListLTNB(Res3.data)
 
         } catch (e) {
@@ -63,7 +64,7 @@ const TrangChu = ({ navigation }) => {
     }, [])
     useEffect(async () => {
         try {
-            const Res2 = await axios.get('https://mobile12346.herokuapp.com/home/phonehot')
+            const Res2 = await axios.get(`${url}/home/phonehot`)
             setListDTNB(Res2.data)
 
         } catch (e) {
@@ -73,7 +74,7 @@ const TrangChu = ({ navigation }) => {
     }, [])
     useEffect(async () => {
         try {
-            const Res2 = await axios.get('https://mobile12346.herokuapp.com/category')
+            const Res2 = await axios.get(`${url}/category`)
             setCategory(Res2.data)
         } catch (e) {
             console.log(e)
@@ -809,9 +810,10 @@ const TrangChu = ({ navigation }) => {
             {
                 nav &&
                 <View style={{
-                    paddingTop: 30,
+                    //Sua
+                    paddingTop: 28,
                     width: '100%',
-                    height: 70,
+                    height: 78,
                     backgroundColor: 'white',
                     position: 'absolute',
                 }} >

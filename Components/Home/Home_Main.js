@@ -15,9 +15,35 @@ import TrangChu_Main from "./TrangChu/TrangChu_Main";
 import GioHang from "./GioHang/GioHang";
 import DanhMucSP_Main from "./DanhMucSanPham/DanhMucSP_Main";
 import TaiKhoan_Main from "./TaiKhoan_Main";
+import { CardContext } from "../../Context/CardContext";
+import { AuthContext } from "../../Context/Auth";
+import axios from "axios";
+import { useContext, useEffect } from "react";
+import { NameContext } from "../../Context/NameContext";
+import { url } from "../../Context/container";
 const Home_Main = () => {
     const maxWidth = Dimensions.get('window').width
-
+    const { setCard, setCount } = useContext(CardContext)
+    const { authState } = useContext(AuthContext)
+    const { setName, setAva } = useContext(NameContext)
+    useEffect(async () => {
+        try {
+            const res = await axios.get(`${url}/cart`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
+            setCard(res.data)
+            setCount(res.data.length)
+        } catch (e) {
+            console.log([e])
+        }
+    }, [])
+    useEffect(async () => {
+        try {
+            const thongtin = await axios.get(`${url}/users/me`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
+            setAva(thongtin.data.avaname ? thongtin.data.avaname : '')
+            setName(thongtin.data.UserName)
+        } catch (e) {
+            console.log([e])
+        }
+    }, [])
 
     return (
         <View style={styles.container}>

@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { useContext } from 'react';
 import { AuthContext } from '../../../Context/Auth';
 import axios from 'axios';
+import { url } from '../../../Context/container';
 
 const DaMua = ({ navigation }) => {
     // navigation.navigate('ChiTietSPDG', { id: '624e5bf684b636f655c458fa' })
@@ -17,7 +18,7 @@ const DaMua = ({ navigation }) => {
     const [id, setId] = useState('')
     const [detail, setDetail] = useState()
     useEffect(async () => {
-        const res = await axios.get('https://mobile12346.herokuapp.com/order/finish', { headers: { Authorization: `Bearer ${authState.user.token}` } })
+        const res = await axios.get(`${url}/order/finish`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
         if (!res.data.success)
             setList([])
         else
@@ -49,8 +50,8 @@ const DaMua = ({ navigation }) => {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     borderRadius: 5,
-                                    marginBottom: 15,
-                                    marginTop: 15,
+                                    marginBottom: 8,
+                                    marginTop: 8,
                                 }}>
                                 <View
                                     style={{
@@ -198,9 +199,16 @@ const DaMua = ({ navigation }) => {
                                         borderBottomRightRadius: 5,
                                         borderBottomLeftRadius: 5,
                                     }}>
-                                    <TouchableOpacity onPress={() => {
+                                    <TouchableOpacity onPress={async () => {
                                         setModalVisible(true)
+
+                                        console.log(authState.user.token)
+                                        console.log(e.id)
+                                        const res = await axios.get(`${url}/order/detail/${e.id}`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
+                                        console.log(res.data)
+                                        setDetail(res.data)
                                         setLoai('XCT')
+
                                     }}
                                         style={{
                                             width: 100,
@@ -342,7 +350,7 @@ const DaMua = ({ navigation }) => {
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={async () => {
-                                            const res = await axios.post(`https://mobile12346.herokuapp.com/feedback/${id}/${detail.ProductId}`, { Rate: countStar, Comment: cmt }, { headers: { Authorization: `Bearer ${authState.user.token}` } })
+                                            const res = await axios.post(`${url}/feedback/${id}/${detail.ProductId}`, { Rate: countStar, Comment: cmt }, { headers: { Authorization: `Bearer ${authState.user.token}` } })
                                             setId('')
                                             setModalVisible(false)
                                         }}
@@ -404,15 +412,17 @@ const DaMua = ({ navigation }) => {
                                 }}>Địa chỉ nhận hàng</Text>
                                 <Text style={{
                                     marginLeft: 5,
-                                }}>Nguyễn Đình Trải</Text>
+                                    fontStyle: 'italic'
+                                }}>{detail.address.Name}</Text>
                                 <Text style={{
                                     marginLeft: 5,
-                                }}>0328 910 355</Text>
+                                    fontStyle: 'italic'
+                                }}>{detail.address.PhoneNumber}</Text>
                                 <Text style={{
                                     marginLeft: 5,
-                                }}>Phú Hòa, Mỹ Đức, Phù Mỹ, Bình Định</Text>
+                                    fontStyle: 'italic'
+                                }}>{detail.address.Address}</Text>
                             </View>
-
                             <View style={{
                                 width: '100%',
                                 backgroundColor: '#fff',
@@ -430,32 +440,44 @@ const DaMua = ({ navigation }) => {
                                         backgroundColor: '#f1f1f1'
                                     }
                                 }></View>
-                                <View style={styles.SPNB}>
+                                <ScrollView style={{
+                                    height: 150
+                                }} nestedScrollEnabled={true}>
+                                    <View >
+                                        {detail.detail.map((e) => {
+                                            return (
+                                                <View key={e.ProductId} style={styles.SPNB}>
 
-                                    <View style={styles.SPNB_item} >
-                                        <Image
-                                            style={styles.ImageSPNB}
-                                            source={{
-                                                uri: 'https://cdn.tgdd.vn/Products/Images/42/269831/Xiaomi-redmi-note-11-blue-200x200.jpg'
-                                            }}
-                                        />
+                                                    <View style={styles.SPNB_item} >
+                                                        <Image
+                                                            style={styles.ImageSPNB}
+                                                            source={{
+                                                                uri: e.Image
+                                                            }}
+                                                        />
+                                                    </View>
+                                                    <View>
+                                                        <View style={styles.SPNB_item}>
+                                                            <Text
+                                                                style={styles.TenSP}>
+                                                                {e.ProductName}
+                                                            </Text>
+                                                        </View>
+                                                        <View style={styles.SPNB_item}>
+                                                            <Text
+                                                                style={styles.GiaSP}>
+                                                                {formatVND(e.Price)}
+                                                            </Text>
+                                                            <Text>Số lượng: {e.Quantity}</Text>
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                            )
+
+                                        })}
                                     </View>
-                                    <View>
-                                        <View style={styles.SPNB_item}>
-                                            <Text
-                                                style={styles.TenSP}>
-                                                Xiaomi Redmi Note 11
-                                            </Text>
-                                        </View>
-                                        <View style={styles.SPNB_item}>
-                                            <Text
-                                                style={styles.GiaSP}>
-                                                4,000,000 đ
-                                            </Text>
-                                            <Text>Số lượng: 1</Text>
-                                        </View>
-                                    </View>
-                                </View>
+                                </ScrollView>
+
                                 <View style={
                                     {
                                         height: 1,
@@ -477,7 +499,7 @@ const DaMua = ({ navigation }) => {
                                         margin: 10,
                                         color: '#A60D0D',
                                         fontSize: 16,
-                                    }}>4.000.000 đ</Text>
+                                    }}>{detail.totalbill && formatVND(detail.totalbill)}</Text>
                                 </View>
 
                             </View>
@@ -494,7 +516,7 @@ const DaMua = ({ navigation }) => {
                                 }}>Hình thức thanh toán</Text>
                                 <Text style={{
                                     marginLeft: 5,
-                                }}>Thanh toán khi nhận hàng</Text>
+                                }}>{detail.payment}</Text>
                             </View>
                             <View style=
                                 {{
@@ -515,17 +537,7 @@ const DaMua = ({ navigation }) => {
                                     <Text style={{
                                         marginLeft: 5,
                                     }}>Thời gian đặt hàng: </Text>
-                                    <Text>13/03/2022</Text>
-                                </View>
-                                <View style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                }}>
-
-                                    <Text style={{
-                                        marginLeft: 5,
-                                    }}>Thời gian nhận hàng: </Text>
-                                    <Text>17/03/2022</Text>
+                                    <Text>{detail.date}</Text>
                                 </View>
 
                             </View>

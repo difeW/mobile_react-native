@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Button } fr
 import { Link, Routes, Route, NativeRouter } from 'react-router-native';
 import { useState } from 'react'
 import { Dimensions } from 'react-native';
+
 const QuenMatKhau = () => {
     const maxWidth = Dimensions.get('window').height - 250
 

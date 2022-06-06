@@ -15,6 +15,7 @@ import XemTatCa from './XemTatCa';
 import { useContext, useRef, useEffect } from 'react';
 import { NavContext } from '../../../Context/NavContext';
 import axios from 'axios';
+import { url } from '../../../Context/container';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,7 +34,7 @@ const DanhMucSanPham = ({ navigation }) => {
         }
         else {
             try {
-                const Res = await axios.get(`https://mobile12346.herokuapp.com/home/search/${search}`)
+                const Res = await axios.get(`${url}/${search}`)
                 setListSearch(Res.data)
             } catch (e) {
                 console.log([e])
@@ -163,8 +164,9 @@ const DanhMucSanPham = ({ navigation }) => {
             }
             <View style={{
                 width: '100%',
-                height: 80,
-                paddingTop: 30,
+                //Sua
+                height: 78,
+                paddingTop: 28,
                 backgroundColor: '#fff',
             }}>
                 <View style={{

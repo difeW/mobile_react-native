@@ -8,6 +8,7 @@ import DoiXacNhan from './MuaHang/DoiXacNhan';
 import DangGiao from './MuaHang/DangGiao';
 import ThongTinCaNhan from './ThongTinCaNhan';
 import DaMua from './MuaHang/DaMua';
+import DaHuy from './MuaHang/DaHuy';
 
 
 const MuaHang = ({ navigation }) => {
@@ -47,6 +48,11 @@ const MuaHang = ({ navigation }) => {
                     name="DaMua"
                     component={DaMua}
                     options={{ tabBarLabel: 'ĐÃ MUA' }}
+                />
+                <Tab1.Screen
+                    name="DaHuy"
+                    component={DaHuy}
+                    options={{ tabBarLabel: 'ĐÃ HỦY' }}
                 />
             </Tab1.Navigator>
         </View>

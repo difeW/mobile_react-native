@@ -10,9 +10,10 @@ import { AuthContext } from '../../Context/Auth';
 import { NameContext } from '../../Context/NameContext';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker'
+import { url } from '../../Context/container';
 
 const ThongTinCaNhan = () => {
-    const { setName } = useContext(NameContext)
+    const { setName, setAva } = useContext(NameContext)
     const days = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     const handleDate = (string) => {
         if (string == null) {
@@ -47,7 +48,7 @@ const ThongTinCaNhan = () => {
     })
     const [API, setAPI] = useState(false)
     useEffect(async () => {
-        const thongtin = await axios.get('https://mobile12346.herokuapp.com/users/me', { headers: { Authorization: `Bearer ${authState.user.token}` } })
+        const thongtin = await axios.get(`${url}/users/me`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
         setTen(thongtin.data.FullName)
         setSDT(thongtin.data.PhoneNumber)
         setDiaChi(thongtin.data.Address)
@@ -71,7 +72,7 @@ const ThongTinCaNhan = () => {
                 setMess('Mật khẩu nhập lại không đúng')
             } else {
                 setLoad(true)
-                const res = await axios.post('https://mobile12346.herokuapp.com/users/changepassword', {
+                const res = await axios.post(`${url}/users/changepassword`, {
                     Old_Value, New_Value
                 }, { headers: { Authorization: `Bearer ${authState.user.token}` } })
                 if (res.data.success) {
@@ -207,6 +208,7 @@ const ThongTinCaNhan = () => {
                 {modalVisible == 'MK' && <ModalC>
                     <TouchableOpacity
                         onPress={() => {
+                            setMess('')
                             setModalVisible(false)
                         }}
                         style={{
@@ -226,6 +228,7 @@ const ThongTinCaNhan = () => {
                     <Text style={{
                         fontSize: 16,
                         fontWeight: 'bold',
+                        marginBottom: 10,
                     }}>CẬP NHẬT MẬT KHẨU</Text>
                     <View style={styles.DangNhap_Input_lable}>
                         <TextInput style={styles.DangNhap_Input_item} secureTextEntry={true} onChangeText={(e) => {
@@ -254,7 +257,6 @@ const ThongTinCaNhan = () => {
                         }}
                         style={{
                             borderRadius: 2,
-                            marginTop: 20,
                             position: 'relative',
                             backgroundColor: '#fff',
                             width: 200,
@@ -276,6 +278,7 @@ const ThongTinCaNhan = () => {
                 {modalVisible == 'SDT' && <ModalC>
                     <TouchableOpacity
                         onPress={() => {
+                            setMess('')
                             setModalVisible(false)
                         }}
                         style={{
@@ -295,6 +298,7 @@ const ThongTinCaNhan = () => {
                     <Text style={{
                         fontSize: 16,
                         fontWeight: 'bold',
+                        marginBottom: 10,
                     }}>CẬP NHẬT SDT</Text>
                     <View style={styles.DangNhap_Input_lable}>
                         <TextInput style={styles.DangNhap_Input_item} value={Old_Value} onChangeText={(e) => {
@@ -315,7 +319,7 @@ const ThongTinCaNhan = () => {
                                 setMess("Các trường không được để trống")
                             } else {
                                 setLoad(true)
-                                const res = await axios.patch('https://mobile12346.herokuapp.com/users/updatephonenumber', {
+                                const res = await axios.patch(`${url}/users/updatephonenumber`, {
                                     Old_Value, New_Value
                                 }, { headers: { Authorization: `Bearer ${authState.user.token}` } })
                                 if (res.data.success) {
@@ -334,7 +338,7 @@ const ThongTinCaNhan = () => {
                         }}
                         style={{
                             borderRadius: 2,
-                            marginTop: 20,
+
                             position: 'relative',
                             backgroundColor: '#fff',
                             width: 200,
@@ -355,6 +359,7 @@ const ThongTinCaNhan = () => {
                 {modalVisible == 'Ten' && <ModalC>
                     <TouchableOpacity
                         onPress={() => {
+                            setMess('')
                             setModalVisible(false)
                         }}
                         style={{
@@ -374,6 +379,7 @@ const ThongTinCaNhan = () => {
                     <Text style={{
                         fontSize: 16,
                         fontWeight: 'bold',
+                        marginBottom: 10,
                     }}>CẬP NHẬT TÊN</Text>
                     <View style={styles.DangNhap_Input_lable}>
                         <TextInput style={styles.DangNhap_Input_item} value={Ten} onChangeText={(e) => {
@@ -391,17 +397,15 @@ const ThongTinCaNhan = () => {
                                 setMess('Tên không được để trống')
                             } else {
                                 setLoad(true)
-                                await axios.patch('https://mobile12346.herokuapp.com/users/changename', {
+                                await axios.patch(`${url}/users/changename`, {
                                     Text: Ten
                                 }, { headers: { Authorization: `Bearer ${authState.user.token}` } })
                                 setModalVisible('')
                                 setLoad(false)
                             }
-
                         }}
                         style={{
                             borderRadius: 2,
-                            marginTop: 20,
                             position: 'relative',
                             backgroundColor: '#fff',
                             width: 200,
@@ -422,6 +426,7 @@ const ThongTinCaNhan = () => {
                 {modalVisible == 'DC' && <ModalC>
                     <TouchableOpacity
                         onPress={() => {
+                            setMess('')
                             setModalVisible(false)
                         }}
                         style={{
@@ -441,17 +446,19 @@ const ThongTinCaNhan = () => {
                     <Text style={{
                         fontSize: 16,
                         fontWeight: 'bold',
+                        marginBottom: 10,
                     }}>CẬP NHẬT ĐỊA CHỈ</Text>
                     <View style={styles.DangNhap_Input_lable}>
                         <TextInput style={styles.DangNhap_Input_item} secureTextEntry={true} value={diaChi} />
                     </View>
                     <TouchableOpacity
                         onPress={() => {
+                            setMess('')
                             setModalVisible(false)
                         }}
                         style={{
                             borderRadius: 2,
-                            marginTop: 20,
+
                             position: 'relative',
                             backgroundColor: '#fff',
                             width: 200,
@@ -472,6 +479,7 @@ const ThongTinCaNhan = () => {
                 {modalVisible == 'NgaySinh' && <ModalC>
                     <TouchableOpacity
                         onPress={() => {
+                            setMess('')
                             setModalVisible(false)
                         }}
                         style={{
@@ -491,6 +499,7 @@ const ThongTinCaNhan = () => {
                     <Text style={{
                         fontSize: 16,
                         fontWeight: 'bold',
+                        marginBottom: 10,
                     }}>CẬP NHẬT NGÀY SINH</Text>
                     <View style={
                         {
@@ -549,7 +558,7 @@ const ThongTinCaNhan = () => {
                             console.log(authState.user.token)
                             setLoad(true)
                             const month1 = (Number(date.month) < 10) ? '0' + Number(date.month) : date.month
-                            await axios.patch('https://mobile12346.herokuapp.com/users/changebirthday', {
+                            await axios.patch(`${url}/users/changebirthday`, {
                                 Text: [date.day, month1, date.year].join('/')
                             }, { headers: { Authorization: `Bearer ${authState.user.token}` } })
                             setModalVisible('')
@@ -558,7 +567,7 @@ const ThongTinCaNhan = () => {
                         }}
                         style={{
                             borderRadius: 2,
-                            marginTop: 20,
+
                             position: 'relative',
                             backgroundColor: '#fff',
                             width: 200,
@@ -579,6 +588,7 @@ const ThongTinCaNhan = () => {
                 {modalVisible == 'AddSDT' && <ModalC>
                     <TouchableOpacity
                         onPress={() => {
+                            setMess('')
                             setModalVisible(false)
                         }}
                         style={{
@@ -598,16 +608,20 @@ const ThongTinCaNhan = () => {
                     <Text style={{
                         fontSize: 16,
                         fontWeight: 'bold',
+                        marginBottom: 10,
                     }}>THÊM SỐ ĐIỆN THOẠI</Text>
                     <View style={styles.DangNhap_Input_lable}>
                         <TextInput style={styles.DangNhap_Input_item} onChangeText={(e) => {
                             setSDT(e)
                         }} value={SDT} />
                     </View>
+                    <Text style={{
+                        color: 'red'
+                    }}>{mess}</Text>
                     <TouchableOpacity
                         onPress={async () => {
                             setLoad(true)
-                            await axios.post('https://mobile12346.herokuapp.com/users/addphonenumber  ', {
+                            await axios.post(`${url}/users/addphonenumber`, {
                                 Text: SDT
                             }, { headers: { Authorization: `Bearer ${authState.user.token}` } })
                             setModalVisible('')
@@ -615,7 +629,6 @@ const ThongTinCaNhan = () => {
                         }}
                         style={{
                             borderRadius: 2,
-                            marginTop: 20,
                             position: 'relative',
                             backgroundColor: '#fff',
                             width: 200,
@@ -741,7 +754,7 @@ const styles = StyleSheet.create({
         textAlign: "center"
     },
     DangNhap_Input_lable: {
-        height: 50,
+        height: 44,
         backgroundColor: '#fff',
         borderWidth: 1,
         borderRadius: 2,
@@ -751,7 +764,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 15,
+        marginTop: 8,
     },
     DangNhap_CII: {
         borderColor: '#bbb',

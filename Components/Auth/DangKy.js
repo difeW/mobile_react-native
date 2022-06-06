@@ -5,6 +5,7 @@ import { Dimensions } from 'react-native';
 import { AuthContext } from '../../Context/Auth';
 import axios from 'axios';
 import ModalC from '../ComponentPublic/ModalC';
+import { url } from '../../Context/container';
 
 const DangKy = () => {
     const [modalVisible, setModalVisible] = useState(false);
@@ -45,7 +46,7 @@ const DangKy = () => {
                 const user = {
                     username, password, email
                 }
-                const res = await axios.post('https://mobile12346.herokuapp.com/auth/signup', user)
+                const res = await axios.post(`${url}/auth/signup`, user)
                 setModalVisible(false)
                 if (res.data.success) {
                     setAuth({ token: res.data.token })

@@ -1,8 +1,11 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, ScrollView, TextInput } from "react-native"
 import { Dimensions } from 'react-native';
 import { Link, Outlet } from 'react-router-native';
-import { useState, useContext } from "react";
+import { useContext, useEffect } from "react";
 import { NavContext } from "../../Context/NavContext";
+import { CardContext } from "../../Context/CardContext";
+import axios from "axios";
+import { AuthContext } from "../../Context/Auth";
 
 const navs = [
     {
@@ -33,6 +36,8 @@ const navs = [
 
 ]
 const Nav = () => {
+    const { card, setCard, count } = useContext(CardContext)
+
     const { nav, setNav } = useContext(NavContext)
     const maxWidth = Dimensions.get('window').width
     return (
@@ -53,75 +58,181 @@ const Nav = () => {
                                 styles.Nav_Content
                             }>
                                 {navs.map((e) => {
-                                    if (nav == e.Ten)
-                                        return (
-                                            <Link to={e.linkto}
-                                                underlayColor="#eee"
-                                                key={e.Ten}
-                                                style={
-                                                    styles.Nav_item
-                                                }>
-                                                <View style={{
-                                                    backgroundColor: '#E4C9C9',
-                                                    width: '100%',
-                                                    height: '100%',
-                                                    display: 'flex',
-                                                    justifyContent: "center",
-                                                    alignItems: "center",
-                                                }}>
-                                                    <Image
-                                                        style={{
-                                                            width: 25,
-                                                            height: 25,
-                                                        }}
-                                                        source={{
-                                                            uri: e.icon
-                                                        }} />
-                                                    <Text style={{
-                                                        color: '#444',
-                                                        fontWeight: '700',
-                                                        fontSize: 13
-                                                    }}>{e.Ten}</Text>
-                                                </View>
-                                            </Link>
-                                        )
-                                    else {
-                                        return (
-                                            <Link to={e.linkto}
-                                                underlayColor="#eee"
-                                                key={e.Ten}
-                                                onPress={() => {
+                                    if (e.Ten == 'Giỏ hàng') {
+                                        if (nav == e.Ten)
+                                            return (
+                                                <Link to={e.linkto}
+                                                    underlayColor="#eee"
+                                                    key={e.Ten}
+                                                    style={
+                                                        styles.Nav_item
+                                                    }>
+                                                    <View style={{
+                                                        backgroundColor: '#E4C9C9',
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        display: 'flex',
+                                                        justifyContent: "center",
+                                                        alignItems: "center",
+                                                        position: 'relative',
+                                                    }}>
+                                                        <View style={{
+                                                            width: 24,
+                                                            height: 24,
+                                                            backgroundColor: 'red',
+                                                            position: 'absolute',
+                                                            top: 0,
+                                                            right: 0,
+                                                            borderRadius: 50,
+                                                            justifyContent: "center",
+                                                            alignItems: "center",
 
-                                                    setNav(e.Ten)
-                                                }}
-                                                style={
-                                                    styles.Nav_item
-                                                }>
-                                                <View style={{
-                                                    width: '100%',
-                                                    height: '100%',
-                                                    display: 'flex',
-                                                    justifyContent: "center",
-                                                    alignItems: "center",
-                                                }}>
-                                                    <Image
-                                                        style={{
-                                                            width: 25,
-                                                            height: 25,
-                                                        }}
-                                                        source={{
-                                                            uri: e.icon
-                                                        }} />
-                                                    <Text style={{
-                                                        color: '#444',
-                                                        fontWeight: '700',
-                                                        fontSize: 13
-                                                    }}>{e.Ten}</Text>
-                                                </View>
-                                            </Link>
+                                                        }}>
+                                                            <Text style={{
+                                                                color: 'white'
+                                                            }}>{count}</Text>
+                                                        </View>
+                                                        <Image
+                                                            style={{
+                                                                width: 25,
+                                                                height: 25,
+                                                            }}
+                                                            source={{
+                                                                uri: e.icon
+                                                            }} />
+                                                        <Text style={{
+                                                            color: '#444',
+                                                            fontWeight: '700',
+                                                            fontSize: 13
+                                                        }}>{e.Ten}</Text>
+                                                    </View>
+                                                </Link>
+                                            )
+                                        else {
+                                            return (
+                                                <Link to={e.linkto}
+                                                    underlayColor="#eee"
+                                                    key={e.Ten}
+                                                    onPress={() => {
 
-                                        )
+                                                        setNav(e.Ten)
+                                                    }}
+                                                    style={
+                                                        styles.Nav_item
+                                                    }>
+                                                    <View style={{
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        display: 'flex',
+                                                        justifyContent: "center",
+                                                        alignItems: "center",
+                                                    }}>
+                                                        <View style={{
+                                                            width: 24,
+                                                            height: 24,
+                                                            backgroundColor: 'red',
+                                                            position: 'absolute',
+                                                            top: 0,
+                                                            right: 0,
+                                                            borderRadius: 50,
+                                                            justifyContent: "center",
+                                                            alignItems: "center",
+
+                                                        }}>
+                                                            <Text style={{
+                                                                color: 'white'
+                                                            }}>{count}</Text>
+                                                        </View>
+                                                        <Image
+                                                            style={{
+                                                                width: 25,
+                                                                height: 25,
+                                                            }}
+                                                            source={{
+                                                                uri: e.icon
+                                                            }} />
+                                                        <Text style={{
+                                                            color: '#444',
+                                                            fontWeight: '700',
+                                                            fontSize: 13
+                                                        }}>{e.Ten}</Text>
+                                                    </View>
+                                                </Link>
+
+                                            )
+                                        }
                                     }
+
+                                    else
+                                        if (nav == e.Ten)
+                                            return (
+                                                <Link to={e.linkto}
+                                                    underlayColor="#eee"
+                                                    key={e.Ten}
+                                                    style={
+                                                        styles.Nav_item
+                                                    }>
+                                                    <View style={{
+                                                        backgroundColor: '#E4C9C9',
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        display: 'flex',
+                                                        justifyContent: "center",
+                                                        alignItems: "center",
+                                                    }}>
+                                                        <Image
+                                                            style={{
+                                                                width: 25,
+                                                                height: 25,
+                                                            }}
+                                                            source={{
+                                                                uri: e.icon
+                                                            }} />
+                                                        <Text style={{
+                                                            color: '#444',
+                                                            fontWeight: '700',
+                                                            fontSize: 13
+                                                        }}>{e.Ten}</Text>
+                                                    </View>
+                                                </Link>
+                                            )
+                                        else {
+                                            return (
+                                                <Link to={e.linkto}
+                                                    underlayColor="#eee"
+                                                    key={e.Ten}
+                                                    onPress={() => {
+
+                                                        setNav(e.Ten)
+                                                    }}
+                                                    style={
+                                                        styles.Nav_item
+                                                    }>
+                                                    <View style={{
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        display: 'flex',
+                                                        justifyContent: "center",
+                                                        alignItems: "center",
+                                                    }}>
+                                                        <Image
+                                                            style={{
+                                                                width: 25,
+                                                                height: 25,
+                                                            }}
+                                                            source={{
+                                                                uri: e.icon
+                                                            }} />
+                                                        <Text style={{
+                                                            color: '#444',
+                                                            fontWeight: '700',
+                                                            fontSize: 13
+                                                        }}>{e.Ten}</Text>
+                                                    </View>
+                                                </Link>
+
+                                            )
+                                        }
 
                                 })}
 

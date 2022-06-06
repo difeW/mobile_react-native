@@ -4,16 +4,20 @@ import { Link, Routes, Route, NativeRouter, useNavigate } from 'react-router-nat
 import { useState, useContext, useEffect } from 'react';
 import DiaChi from './DiaChi';
 import HinhThucThanhToan from './HinhThucThanhToan';
-import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 import { NavContext } from '../../../Context/NavContext';
 import { AuthContext } from '../../../Context/Auth';
 import axios from 'axios';
 import { HinhThucContext } from '../../../Context/HinhThucThanhToan';
+import { CardContext } from '../../../Context/CardContext';
+import ModalC from '../../ComponentPublic/ModalC';
+import { selectProductContext } from '../../../Context/selectProductContext';
+import { url } from '../../../Context/container';
 
 
 const ThanhToan = () => {
     const { hinhThucThanhToan, setValue } = useContext(HinhThucContext)
     const { setNav } = useContext(NavContext)
+    const { card, setCard, DeleteCard, setCount, IncreCard } = useContext(CardContext)
     const [XacNhan, setXacNhan] = useState(false)
     const [ChacChan, setChacChan] = useState('0')
     const ThanhTien = (list) => {
@@ -25,15 +29,17 @@ const ThanhToan = () => {
         return n.toFixed(1).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + ' đ';
     }
     const { authState } = useContext(AuthContext)
+    const [Modal1, setModal1] = useState(false)
+    const [product, setProduct] = useState('')
     const [listSP, setlistSP] = useState()
     const [Tien, setTien] = useState(ThanhTien(listSP))
     const Tiens = formatVND(Tien)
     const [list, setlist] = useState([])
     useEffect(async () => {
-        const res = await axios.get('https://mobile12346.herokuapp.com/cart', { headers: { Authorization: `Bearer ${authState.user.token}` } })
-        setlistSP(res.data)
-        setTien(ThanhTien(res.data))
-        setlist(res.data.map((e) => {
+        // const res = await axios.get('http://gotech.australiaeast.cloudapp.azure.com/cart', { headers: { Authorization: `Bearer ${authState.user.token}` } })
+        setlistSP(card)
+        setTien(ThanhTien(card))
+        setlist(card.map((e) => {
             return e.Quantity
         }))
         return function cleanup() {
@@ -41,15 +47,73 @@ const ThanhToan = () => {
             setTien(ThanhTien(listSP))
             setlist([])
         };
-    }, [listSP])
+    }, [card])
     function formatVND(n) {
         return n.toFixed(1).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + ' đ';
     }
     return (
         <View style={styles.container}>
+            {Modal1 && <ModalC>
+                <Text style={{
+                    fontSize: 16,
+                }}>Bạn chắc chắn muốn xóa sản phẩm?</Text>
+                <View style={{
+                    flexDirection: "row"
+                }}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setModal1(false)
+                        }}
+                        style={{
+                            borderRadius: 2,
+                            position: 'relative',
+                            marginTop: 10,
+                            marginRight: 10,
+                            backgroundColor: '#fff',
+                            width: 100,
+                            height: 40,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderWidth: 1,
+                            borderColor: '#000'
+                        }}
+                    >
+                        <Text style={{
+                            color: '#000',
+                            fontSize: 16,
+                        }}>Hủy</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            DeleteCard(product)
+                            setModal1(false)
+                        }}
+                        style={{
+                            borderRadius: 2,
+                            position: 'relative',
+                            marginTop: 10,
+                            backgroundColor: '#fff',
+                            width: 100,
+                            height: 40,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderWidth: 1,
+                            borderColor: '#A60D0D'
+                        }}
+                    >
+                        <Text style={{
+                            color: '#A60D0D',
+                            fontSize: 16,
+                        }}>Xác Nhận</Text>
+                    </TouchableOpacity>
+                </View>
+            </ModalC>}
             <View style={{
-                height: 80,
-                paddingTop: 30,
+                //Sua
+                height: 78,
+                paddingTop: 28,
 
             }}>
                 <View style={{
@@ -113,17 +177,12 @@ const ThanhToan = () => {
                     }
                     {listSP &&
                         listSP.map((e, i, a) => {
-                            let soluong = e.Quantity
                             return (
                                 <View style={styles.SP} key={e.id}>
                                     <TouchableOpacity
                                         onPress={async () => {
-                                            const res = await axios.delete(`https://mobile12346.herokuapp.com/cart/${e.id}`,
-                                                { headers: { Authorization: `Bearer ${authState.user.token}` } })
-
-                                            let newList = listSP.filter(item => item.id != e.id)
-                                            setlistSP([...newList])
-                                            setTien(ThanhTien(newList))
+                                            setModal1(true)
+                                            setProduct(e.id)
                                         }}
                                         style={{
                                             position: 'absolute',
@@ -140,13 +199,19 @@ const ThanhToan = () => {
                                             color: '#bbb',
                                         }}>X</Text>
                                     </TouchableOpacity>
-                                    <Image
-                                        style={styles.SP_ImSP}
-                                        source={
-                                            {
-                                                uri: e.Picture
-                                            }
-                                        } />
+                                    <TouchableOpacity onPress={() => {
+                                        navigation.navigate('ChiTiet', {
+                                            id: e.ProductId
+                                        })
+                                    }}>
+                                        <Image
+                                            style={styles.SP_ImSP}
+                                            source={
+                                                {
+                                                    uri: e.Picture
+                                                }
+                                            } />
+                                    </TouchableOpacity>
                                     <View>
                                         <Text style={styles.SP_TenSP}>{e.ProductName}</Text>
                                         <Text style={styles.SP_Gia}>{formatVND(Number(e.Price))}</Text>
@@ -157,29 +222,20 @@ const ThanhToan = () => {
                                                 style={styles.SP_btnGiam}
                                                 onPress={async (ele) => {
 
-                                                    const res = await axios.patch(`https://mobile12346.herokuapp.com/cart/${e.id}`,
-                                                        {
-                                                            Quantity: e.Quantity - 1,
-                                                            ProductId: e.ProductId
-
-                                                        }, { headers: { Authorization: `Bearer ${authState.user.token}` } })
-
+                                                    let newA = list.slice()
+                                                    newA[i]--
+                                                    setlist(newA)
+                                                    IncreCard(e.id, e.Quantity - 1, e.ProductId)
                                                 }}
                                             >
                                             </TouchableOpacity >
                                             <TextInput style={styles.SP_InputSL} value={String(list[i])} />
                                             <TouchableOpacity
-                                                onPress={async (ele) => {
+                                                onPress={async () => {
                                                     let newA = list.slice()
                                                     newA[i]++
                                                     setlist(newA)
-
-                                                    const res = await axios.patch(`https://mobile12346.herokuapp.com/cart/${e.id}`,
-                                                        {
-                                                            Quantity: e.Quantity + 1,
-                                                            ProductId: e.ProductId
-
-                                                        }, { headers: { Authorization: `Bearer ${authState.user.token}` } })
+                                                    IncreCard(e.id, e.Quantity + 1, e.ProductId)
                                                 }}
                                                 style={styles.SP_btnTang}
                                             >
@@ -254,38 +310,44 @@ const ThanhToan = () => {
                                     <TouchableOpacity onPress={() => {
                                         setXacNhan(false)
                                     }} style={{
-                                        backgroundColor: '#A60D0D',
+                                        backgroundColor: '#fff',
                                         width: 100,
                                         height: 35,
                                         marginRight: 8,
                                         justifyContent: 'center',
                                         alignItems: 'center',
                                         borderRadius: 5,
+                                        borderWidth: 1,
+                                        borderColor: '#000'
                                     }}>
                                         <Text style={{
-                                            color: 'white'
+                                            color: 'black'
                                         }}>Hủy</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={async () => {
                                         const cartId = listSP.map((e) => e.id)
                                         setChacChan('1')
-                                        const res = await axios.post('https://mobile12346.herokuapp.com/order ', {
+                                        const res = await axios.post(`${url}/order`, {
                                             cartId,
                                             payment: hinhThucThanhToan
                                         }, { headers: { Authorization: `Bearer ${authState.user.token}` } })
                                         setChacChan('2')
+                                        setCard([])
+                                        setCount(0)
                                     }} style={{
-                                        backgroundColor: 'green',
+                                        backgroundColor: '#fff',
                                         width: 100,
                                         height: 35,
                                         marginRight: 8,
                                         justifyContent: 'center',
                                         alignItems: 'center',
                                         borderRadius: 5,
+                                        borderWidth: 1,
+                                        borderColor: '#A60D0D'
                                     }}>
                                         <Text style={{
-                                            color: 'white'
-                                        }}>Chắn chắn</Text>
+                                            color: '#A60D0D'
+                                        }}>Chắc chắn</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>}

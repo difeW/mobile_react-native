@@ -7,7 +7,7 @@ import axios from 'axios';
 import ModalC from '../../ComponentPublic/ModalC';
 import { url } from '../../../Context/container';
 
-const DoiXacNhan = () => {
+const DaHuy = () => {
     const { authState } = useContext(AuthContext)
     const [modalVisible, setModalVisible] = useState(false);
     const [list, setList] = useState(null);
@@ -15,7 +15,7 @@ const DoiXacNhan = () => {
     const [detail, setDetail] = useState()
     const [idhuy, setDonHangHuy] = useState('')
     useEffect(async () => {
-        const res = await axios.get(`${url}/order/bill`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
+        const res = await axios.get(`${url}/order/cancel`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
         if (!res.data.success)
             setList(([]))
         else
@@ -27,7 +27,7 @@ const DoiXacNhan = () => {
     const handleSubmit = async () => {
         console.log(authState.user.token)
         console.log(idhuy)
-        const res = await axios.post(`${url}/order/cancel`, { orderid: idhuy }, { headers: { Authorization: `Bearer ${authState.user.token}` } })
+        const res = await axios.post(`${url}/order/cancel/${idhuy}`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
         console.log(res.data)
         setModal1(false)
     }
@@ -217,50 +217,23 @@ const DoiXacNhan = () => {
                                     borderBottomRightRadius: 5,
                                     borderBottomLeftRadius: 5,
                                 }}>
-                                <TouchableOpacity onPress={async () => {
-                                    console.log(authState.user.token)
-                                    console.log(e.id)
-                                    setModalVisible(true)
-                                    const res = await axios.get(`${url}/order/detail/${e.id}`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
-                                    setDetail(res.data)
-                                }}
+                                <TouchableOpacity
                                     style={{
-                                        width: 100,
+                                        width: 150,
                                         height: 40,
                                         borderRadius: 5,
                                         display: 'flex',
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                        borderWidth: 1,
-                                        borderColor: '#A60D0D',
                                         marginRight: 10,
                                     }}>
                                     <Text
                                         style={{
                                             fontSize: 14,
                                             color: '#A60D0D'
-                                        }}>Xem chi tiết</Text>
+                                        }}>ĐƠN HÀNG ĐÃ HỦY</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        setModal1(true)
-                                        setDonHangHuy(e.id)
-                                    }}
-                                    style={{
-                                        width: 100,
-                                        backgroundColor: '#F40E0E',
-                                        height: 40,
-                                        borderRadius: 5,
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                    }}>
-                                    <Text
-                                        style={{
-                                            fontSize: 14,
-                                            color: '#fff'
-                                        }}>Hủy</Text>
-                                </TouchableOpacity>
+
                             </View>
                         </View>
                     )
@@ -552,4 +525,4 @@ const styles = StyleSheet.create({
         color: 'white',
     }
 });
-export default DoiXacNhan
+export default DaHuy

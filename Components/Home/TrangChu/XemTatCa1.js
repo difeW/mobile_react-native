@@ -7,13 +7,14 @@ import { Dimensions } from 'react-native';
 import { useEffect } from 'react';
 import axios from 'axios';
 import StarList from '../StarList';
+import { url } from '../../../Context/container';
 
 
 const XemTatCa1 = ({ navigation, route }) => {
     const [select, setSelect] = useState(route.params.category)
     const [category, setCategory] = useState([])
     const type = route.params.string;
-    const string = `https://mobile12346.herokuapp.com/product/${type}`
+    const string = `${url}/product/${type}`
     const [api, setApi] = useState(string + '/' + select)
     const maxH = Dimensions.get('window').height
     function formatVND(n) {
@@ -31,7 +32,7 @@ const XemTatCa1 = ({ navigation, route }) => {
     }, [api])
     useEffect(async () => {
         try {
-            const Res2 = await axios.get('https://mobile12346.herokuapp.com/category')
+            const Res2 = await axios.get(`${url}/category`)
             if (type == 'phone') {
                 setCategory(Res2.data.phone)
             }
@@ -46,6 +47,7 @@ const XemTatCa1 = ({ navigation, route }) => {
             position: 'relative',
             backgroundColor: '#f1f1f1',
             width: '100%',
+            marginTop: 28
         }}>
             <View style={{
                 width: '100%',

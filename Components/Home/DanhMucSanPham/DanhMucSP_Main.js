@@ -23,9 +23,7 @@ function DanhMucSP_Main() {
                 style={{
                     height: 60
                 }}></View>
-
         </View>
-
     );
 }
 export default DanhMucSP_Main

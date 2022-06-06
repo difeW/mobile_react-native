@@ -12,15 +12,19 @@ import { selectProductContext } from '../../../Context/selectProductContext';
 import TongQuanLap from './TongQuanLap';
 import ThongSoLaptop from './ThongSoLaptop';
 import axios from 'axios';
+import SPGoiY from './SPGoiY';
+import { url } from '../../../Context/container';
 
 const ChiTietSP1 = ({ navigation, route }) => {
     const { id, setId } = useContext(selectProductContext)
     const [tongQuanData, setTongQuanData] = useState()
+    const [ID, setID] = useState('')
     const [ThongSoData, setThongSoData] = useState()
     const [Type, setType] = useState('')
     useEffect(async () => {
-        const res = await axios.get(`https://mobile12346.herokuapp.com/product/${route.params.id}`)
+        const res = await axios.get(`${url}/product/${route.params.id}`)
         setId(route.params.id)
+        setID(route.params.id)
         setType(res.data[0].prod.Type)
         setThongSoData(
             [
@@ -121,6 +125,7 @@ const ChiTietSP1 = ({ navigation, route }) => {
                         }}>
                             <TongQuan Data={tongQuanData} />
                             <ThongSo Data={ThongSoData} />
+                            <SPGoiY navigation={navigation} Data={ID} />
                             <DanhGia />
                         </View>}
                     {Type == 'Laptop' &&
@@ -129,8 +134,9 @@ const ChiTietSP1 = ({ navigation, route }) => {
                         }}>
                             <TongQuanLap Data={tongQuanData} />
                             <ThongSoLaptop Data={ThongSoData} />
+                            <SPGoiY navigation={navigation} Data={ID} />
                             <DanhGia />
-                            
+
                         </View>}
                 </View>
                 <View style={

@@ -20,7 +20,6 @@ function TaiKhoan_Main() {
                 }} />
             </Stack.Navigator>
         </View>
-
     );
 }
 export default TaiKhoan_Main

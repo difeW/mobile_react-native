@@ -4,6 +4,7 @@ import { useState, useContext } from 'react'
 import { Dimensions } from 'react-native';
 import axios from 'axios';
 import { AuthContext } from '../../Context/Auth';
+import { url } from '../../Context/container';
 
 
 const DangNhap = () => {
@@ -36,13 +37,14 @@ const DangNhap = () => {
                     password
                 }
                 // setAuth(user)
-                const res = await axios.post('https://mobile12346.herokuapp.com/auth/signin', u)
+                const res = await axios.post(`${url}/auth/signin`, u)
                 setModalVisible(false)
                 if (res.data.success) {
                     const user = {
                         token: res.data.token
                     }
                     setAuth(user)
+                    console.log(1)
                     his('/Home')
                 }
                 else {

@@ -10,7 +10,7 @@ import axios from 'axios';
 import { AuthContext } from '../../../Context/Auth';
 import { selectProductContext } from '../../../Context/selectProductContext';
 import CountStar from './CountStar';
-
+import { url } from '../../../Context/container';
 
 
 const DanhGia = ({ Data }) => {
@@ -18,7 +18,7 @@ const DanhGia = ({ Data }) => {
     const { id, setId } = useContext(selectProductContext)
     const [list, setList] = useState([])
     useEffect(async () => {
-        const res = await axios.get(`https://mobile12346.herokuapp.com/feedback/${id}`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
+        const res = await axios.get(`${url}/feedback/${id}`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
         setList(res.data)
     }, [id])
     return (

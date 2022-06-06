@@ -10,8 +10,9 @@ const CuaHang = () => {
     return (
         <View style={styles.container}>
             <View style={{
-                height: 80,
-                paddingTop: 30,
+                //Sua
+                height: 78,
+                paddingTop: 28,
                 backgroundColor: '#fff'
             }}>
 
@@ -27,7 +28,7 @@ const CuaHang = () => {
                     backgroundColor: '#fff',
                 }}>
                     <View style={styles.header}>
-                        <Text style={styles.headerText}>About Me</Text>
+                        <Text style={styles.headerText}>Về Chúng Tôi</Text>
                     </View>
                 </View>
             </View>

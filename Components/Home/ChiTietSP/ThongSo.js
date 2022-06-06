@@ -9,12 +9,17 @@ import { selectProductContext } from '../../../Context/selectProductContext';
 import { AuthContext } from '../../../Context/Auth';
 import axios from 'axios';
 import ModalC from '../../ComponentPublic/ModalC';
+import { CardContext } from '../../../Context/CardContext';
 
 const ThongSo = ({ Data }) => {
     const [Load, setLoad] = useState('')
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
     const { id } = useContext(selectProductContext)
     const { authState } = useContext(AuthContext)
     const { setNav } = useContext(NavContext)
+    const { AddProduct } = useContext(CardContext)
     return (
         <View>
             <View style={styles.container}>
@@ -39,10 +44,8 @@ const ThongSo = ({ Data }) => {
 
             <TouchableOpacity onPress={async () => {
                 setLoad('xl')
-                const res = await axios.post('https://mobile12346.herokuapp.com/cart', {
-                    ProductId: id
-                }, { headers: { Authorization: `Bearer ${authState.user.token}` } })
-                setLoad(res.data.mess)
+                AddProduct(id)
+                setLoad('Sản phẩm đã được thêm vào giỏ hàng')
 
             }} underlayColor={'#'} style={styles.BTNMuaNgay}>
                 <View style={styles.BTNMuaNgay}>

@@ -1,9 +1,37 @@
 import { StyleSheet, Text, ScrollView, View, Image, TouchableOpacity, Modal, TextInput, TextAncestor } from 'react-native';
 import { useState } from 'react';
 import StarReview from 'react-native-stars';
+import { useEffect } from 'react';
+import { useContext } from 'react';
+import { AuthContext } from '../../../Context/Auth';
+import axios from 'axios';
+import ModalC from '../../ComponentPublic/ModalC';
+import { url } from '../../../Context/container';
 
 const DangGiao = () => {
+    const { authState } = useContext(AuthContext)
     const [modalVisible, setModalVisible] = useState(false);
+    const [list, setList] = useState(null);
+    const [Modal1, setModal1] = useState(false)
+    const [detail, setDetail] = useState()
+    const [idhuy, setDonHangHuy] = useState('')
+    useEffect(async () => {
+        const res = await axios.get(`${url}/order/ship`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
+        if (!res.data.success)
+            setList(([]))
+        else
+            setList(res.data.order)
+    }, [list])
+    function formatVND(n) {
+        return n.toFixed(1).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + ' đ';
+    }
+    const handleSubmit = async () => {
+        console.log(authState.user.token)
+        console.log(idhuy)
+        const res = await axios.post(`${url}/order/cancel`, { orderid: idhuy }, { headers: { Authorization: `Bearer ${authState.user.token}` } })
+        console.log(res.data)
+        setModal1(false)
+    }
     return (
         <ScrollView
             style={{
@@ -15,136 +43,149 @@ const DangGiao = () => {
                     display: 'flex',
                     alignItems: 'center'
                 }}>
-                <View
-                    style={{
-                        width: '94%',
-                        borderColor: '#bbb',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderRadius: 5,
-                        marginBottom: 15,
-                        marginTop: 15,
-                    }}>
-                    <View
-                        style={{
-                            width: '100%',
-                            marginBottom: 1,
-                            padding: 8,
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            borderTopRightRadius: 5,
-                            borderTopLeftRadius: 5,
-                            backgroundColor: '#fff',
-                        }}>
-                        <Text style={{
-                            fontSize: 12,
-                            color: '#444',
-                            width: 190,
-                        }}>ĐẶT NGÀY: 13/03/2022</Text>
-                        <Text style={{
-                            fontSize: 12,
-                            color: '#444',
-                        }}>MÃ GIAO HÀNG: GH49378DS</Text>
-                    </View>
-                    <View
-                        style={{
-                            width: '100%',
-                            marginBottom: 1,
-                            backgroundColor: '#fff',
-                        }}>
-                        <View style={styles.SPNB}>
-
-                            <View style={styles.SPNB_item} >
-                                <Image
-                                    style={styles.ImageSPNB}
-                                    source={{
-                                        uri: 'https://cdn.tgdd.vn/Products/Images/42/269831/Xiaomi-redmi-note-11-blue-200x200.jpg'
-                                    }}
-                                />
-                            </View>
-                            <View>
-                                <View style={styles.SPNB_item}>
-                                    <Text
-                                        style={styles.TenSP}>
-                                        Xiaomi Redmi Note 11
-                                    </Text>
-                                </View>
-                                <View style={styles.SPNB_item}>
-                                    <Text
-                                        style={styles.GiaSP}>
-                                        4,000,000 đ
-                                    </Text>
-                                    <Text>Số lượng: 1</Text>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-
-                    <View
-                        style={{
-                            width: '100%',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            marginBottom: 1,
-                            flexDirection: 'row',
-                            padding: 10,
-                            backgroundColor: '#fff',
-                        }}>
-                        <Text style={{
-                            color: '#444',
-                            fontSize: 12,
-                        }}>1 sản phẩm</Text>
-                        <View style={{
-                            justifyContent: 'flex-end',
-                            alignItems: 'center',
-                            marginBottom: 1,
-                            flexDirection: 'row',
-                        }}>
-                            <Text style={{
-                                fontSize: 16,
-                                color: '#444',
-                            }}>Đơn giá: </Text>
-                            <Text style={{
-                                fontSize: 16,
-                                color: '#A60D0D',
-                            }}>4.000.000 đ</Text>
-                        </View>
-
-                    </View>
-                    <View
-                        style={{
-                            width: '100%',
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'flex-end',
-                            alignItems: 'center',
-                            backgroundColor: '#fff',
-                            padding: 10,
-                            borderBottomRightRadius: 5,
-                            borderBottomLeftRadius: 5,
-                        }}>
-                        <TouchableOpacity onPress={() => {
-                            setModalVisible(true)
-                        }}
+                {list && list.map((e) => {
+                    return (
+                        <View key={e.id}
                             style={{
-                                width: 100,
-                                height: 40,
-                                borderRadius: 5,
+                                width: '94%',
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                borderWidth: 1,
-                                borderColor: '#A60D0D',
+                                borderRadius: 5,
+                                marginBottom: 8,
+                                marginTop: 8,
                             }}>
-                            <Text
+                            <View
                                 style={{
-                                    fontSize: 14,
-                                    color: '#A60D0D'
-                                }}>Xem chi tiết</Text>
-                        </TouchableOpacity>
-                    </View>
+                                    width: '100%',
+                                    marginBottom: 1,
+                                    padding: 8,
+                                    borderTopRightRadius: 5,
+                                    borderTopLeftRadius: 5,
+                                    backgroundColor: '#fff',
+
+                                }}>
+                                <Text style={{
+                                    fontSize: 13,
+                                    color: '#444'
+                                }}>ĐẶT NGÀY: {e.OrderDay}</Text>
+                            </View>
+                            <View
+                                style={{
+                                    width: '100%',
+                                    marginBottom: 1,
+                                    backgroundColor: '#fff',
+                                }}>
+                                {e.Detail.map((e) => {
+                                    return (
+                                        <View style={styles.SPNB}>
+
+                                            <View style={styles.SPNB_item} >
+                                                <Image
+                                                    style={styles.ImageSPNB}
+                                                    source={{
+                                                        uri: e.Image
+                                                    }}
+                                                />
+                                            </View>
+                                            <View>
+                                                <View style={styles.SPNB_item}>
+                                                    <Text
+                                                        style={styles.TenSP}>
+                                                        {e.ProductName}
+                                                    </Text>
+                                                </View>
+                                                <View style={styles.SPNB_item}>
+                                                    <Text
+                                                        style={styles.GiaSP}>
+                                                        {formatVND(e.Price)}
+                                                    </Text>
+                                                    <Text>Số lượng: {e.Quantity}</Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    )
+
+                                })}
+
+                            </View>
+
+                            <View
+                                style={{
+                                    width: '100%',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    marginBottom: 1,
+                                    flexDirection: 'row',
+                                    padding: 10,
+                                    backgroundColor: '#fff',
+                                }}>
+                                <Text style={{
+                                    color: '#444',
+                                    fontSize: 12,
+                                }}>{e.Detail.length} sản phẩm</Text>
+                                <View style={{
+                                    justifyContent: 'flex-end',
+                                    alignItems: 'center',
+                                    marginBottom: 1,
+                                    flexDirection: 'row',
+                                }}>
+                                    <Text style={{
+                                        fontSize: 16,
+                                        color: '#444',
+                                    }}>Đơn giá: </Text>
+                                    <Text style={{
+                                        fontSize: 16,
+                                        color: '#A60D0D',
+                                    }}>{formatVND(e.Paid)}</Text>
+                                </View>
+
+                            </View>
+                            <View
+                                style={{
+                                    width: '100%',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-end',
+                                    alignItems: 'center',
+                                    backgroundColor: '#fff',
+                                    padding: 10,
+                                    borderBottomRightRadius: 5,
+                                    borderBottomLeftRadius: 5,
+                                }}>
+                                <TouchableOpacity onPress={async () => {
+                                    console.log(authState.user.token)
+                                    console.log(e.id)
+                                    setModalVisible(true)
+                                    const res = await axios.get(`${url}/order/detail/${e.id}`, { headers: { Authorization: `Bearer ${authState.user.token}` } })
+                                    setDetail(res.data)
+                                }}
+                                    style={{
+                                        width: 100,
+                                        height: 40,
+                                        borderRadius: 5,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        borderWidth: 1,
+                                        borderColor: '#A60D0D',
+                                        marginRight: 10,
+                                    }}>
+                                    <Text
+                                        style={{
+                                            fontSize: 14,
+                                            color: '#A60D0D'
+                                        }}>Xem chi tiết</Text>
+                                </TouchableOpacity>
+
+                            </View>
+                        </View>
+                    )
+                })}
+                <View style={{
+                    height: 100
+                }}>
                 </View>
             </View>
             <Modal
@@ -156,7 +197,11 @@ const DangGiao = () => {
                     setModalVisible(!modalVisible);
                 }}
             >
-                <View style={styles.centeredView}
+                {!detail &&
+                    <ModalC>
+                        <Text>Đang tải...</Text>
+                    </ModalC>}
+                {detail && <View style={styles.centeredView}
                 >
                     <TouchableOpacity onPress={() => {
                         setModalVisible(!modalVisible);
@@ -195,15 +240,17 @@ const DangGiao = () => {
                             }}>Địa chỉ nhận hàng</Text>
                             <Text style={{
                                 marginLeft: 5,
-                            }}>Nguyễn Đình Trải</Text>
+                                fontStyle: 'italic'
+                            }}>{detail.address.Name}</Text>
                             <Text style={{
                                 marginLeft: 5,
-                            }}>0328 910 355</Text>
+                                fontStyle: 'italic'
+                            }}>{detail.address.PhoneNumber}</Text>
                             <Text style={{
                                 marginLeft: 5,
-                            }}>Phú Hòa, Mỹ Đức, Phù Mỹ, Bình Định</Text>
+                                fontStyle: 'italic'
+                            }}>{detail.address.Address}</Text>
                         </View>
-
                         <View style={{
                             width: '100%',
                             backgroundColor: '#fff',
@@ -221,32 +268,44 @@ const DangGiao = () => {
                                     backgroundColor: '#f1f1f1'
                                 }
                             }></View>
-                            <View style={styles.SPNB}>
+                            <ScrollView style={{
+                                height: 150
+                            }} nestedScrollEnabled={true}>
+                                <View >
+                                    {detail.detail.map((e) => {
+                                        return (
+                                            <View key={e.ProductId} style={styles.SPNB}>
 
-                                <View style={styles.SPNB_item} >
-                                    <Image
-                                        style={styles.ImageSPNB}
-                                        source={{
-                                            uri: 'https://cdn.tgdd.vn/Products/Images/42/269831/Xiaomi-redmi-note-11-blue-200x200.jpg'
-                                        }}
-                                    />
+                                                <View style={styles.SPNB_item} >
+                                                    <Image
+                                                        style={styles.ImageSPNB}
+                                                        source={{
+                                                            uri: e.Image
+                                                        }}
+                                                    />
+                                                </View>
+                                                <View>
+                                                    <View style={styles.SPNB_item}>
+                                                        <Text
+                                                            style={styles.TenSP}>
+                                                            {e.ProductName}
+                                                        </Text>
+                                                    </View>
+                                                    <View style={styles.SPNB_item}>
+                                                        <Text
+                                                            style={styles.GiaSP}>
+                                                            {formatVND(e.Price)}
+                                                        </Text>
+                                                        <Text>Số lượng: {e.Quantity}</Text>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        )
+
+                                    })}
                                 </View>
-                                <View>
-                                    <View style={styles.SPNB_item}>
-                                        <Text
-                                            style={styles.TenSP}>
-                                            Xiaomi Redmi Note 11
-                                        </Text>
-                                    </View>
-                                    <View style={styles.SPNB_item}>
-                                        <Text
-                                            style={styles.GiaSP}>
-                                            4,000,000 đ
-                                        </Text>
-                                        <Text>Số lượng: 1</Text>
-                                    </View>
-                                </View>
-                            </View>
+                            </ScrollView>
+
                             <View style={
                                 {
                                     height: 1,
@@ -268,7 +327,7 @@ const DangGiao = () => {
                                     margin: 10,
                                     color: '#A60D0D',
                                     fontSize: 16,
-                                }}>4.000.000 đ</Text>
+                                }}>{detail.totalbill && formatVND(detail.totalbill)}</Text>
                             </View>
 
                         </View>
@@ -285,7 +344,7 @@ const DangGiao = () => {
                             }}>Hình thức thanh toán</Text>
                             <Text style={{
                                 marginLeft: 5,
-                            }}>Thanh toán khi nhận hàng</Text>
+                            }}>{detail.payment}</Text>
                         </View>
                         <View style=
                             {{
@@ -306,8 +365,9 @@ const DangGiao = () => {
                                 <Text style={{
                                     marginLeft: 5,
                                 }}>Thời gian đặt hàng: </Text>
-                                <Text>13/03/2022</Text>
+                                <Text>{detail.date}</Text>
                             </View>
+
                         </View>
                     </View>
                     <TouchableOpacity onPress={() => {
@@ -318,7 +378,7 @@ const DangGiao = () => {
                     }}>
 
                     </TouchableOpacity>
-                </View>
+                </View>}
             </Modal>
 
         </ScrollView>

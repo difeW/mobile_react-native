@@ -42,7 +42,7 @@ const Auth = () => {
 const styles = StyleSheet.create({
     Auth: {
         backgroundColor: '#3E84DC',
-        marginTop: 34,
+        marginTop: 28,
         width: '100%',
         height: '100%',
         display: 'flex',

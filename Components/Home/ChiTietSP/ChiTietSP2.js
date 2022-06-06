@@ -14,6 +14,9 @@ import { useContext, useRef } from 'react';
 import { selectProductContext } from '../../../Context/selectProductContext';
 import TongQuanLap from './TongQuanLap';
 import ThongSoLaptop from './ThongSoLaptop';
+import SPGoiY from './SPGoiY';
+import { url } from '../../../Context/container';
+
 
 const ChiTietSP2 = ({ navigation, route }) => {
     const [selectS, setselectS] = useState(0)
@@ -21,6 +24,7 @@ const ChiTietSP2 = ({ navigation, route }) => {
     const [tabsearch, setTabsearch] = useState(false)
     const refContainer3 = useRef(null)
     const [Focus, setfocus] = useState(false)
+    const [ID, setID] = useState('')
     const [search, setSearch] = useState('')
     const { id, setId } = useContext(selectProductContext)
     const [tongQuanData, setTongQuanData] = useState()
@@ -32,7 +36,7 @@ const ChiTietSP2 = ({ navigation, route }) => {
         }
         else {
             try {
-                const Res = await axios.get(`https://mobile12346.herokuapp.com/home/search/${search}`)
+                const Res = await axios.get(`${url}/home/search/${search}`)
                 setListSearch(Res.data)
             } catch (e) {
                 console.log([e])
@@ -45,8 +49,9 @@ const ChiTietSP2 = ({ navigation, route }) => {
     }
 
     useEffect(async () => {
-        const res = await axios.get(`https://mobile12346.herokuapp.com/product/${route.params.id}`)
+        const res = await axios.get(`${url}/product/${route.params.id}`)
         setId(route.params.id)
+        setID(route.params.id)
         setType(res.data[0].prod.Type)
         setThongSoData(
             [
@@ -126,11 +131,11 @@ const ChiTietSP2 = ({ navigation, route }) => {
                 break;
             }
         }
-    }, [])
+    }, [route.params.id])
     useEffect(async () => {
         if (selectS == 0) { }
         else {
-            const res = await axios.get(`https://mobile12346.herokuapp.com/product/${id}`)
+            const res = await axios.get(`${url}/product/${id}`)
             setType(res.data[0].prod.Type)
             setThongSoData(
                 [
@@ -332,9 +337,11 @@ const ChiTietSP2 = ({ navigation, route }) => {
                 </Modal>
             }
             <View style={{
-                paddingTop: 30,
+                paddingTop: 28,
+                // paddingTop: 34,
                 width: '100%',
-                height: 80,
+                height: 78,
+                // height: 84,
                 backgroundColor: 'white',
             }} >
                 <View style={{
@@ -421,6 +428,7 @@ const ChiTietSP2 = ({ navigation, route }) => {
                         }}>
                             <TongQuan Data={tongQuanData} />
                             <ThongSo Data={ThongSoData} />
+                            <SPGoiY navigation={navigation} Data={ID} />
                             <DanhGia Data={tongQuanData ? tongQuanData.ProductName : ''} />
                         </View>}
                     {Type == 'Laptop' &&
@@ -429,6 +437,7 @@ const ChiTietSP2 = ({ navigation, route }) => {
                         }}>
                             <TongQuanLap Data={tongQuanData} />
                             <ThongSoLaptop Data={ThongSoData} />
+                            <SPGoiY navigation={navigation} Data={ID} />
                             <DanhGia Data={tongQuanData ? tongQuanData.ProductName : ''} />
                         </View>}
                 </View>
@@ -449,9 +458,11 @@ const ChiTietSP2 = ({ navigation, route }) => {
             }
         }>
             <View style={{
-                paddingTop: 30,
+                //Sua 
+                paddingTop: 28,
                 width: '100%',
-                height: 70,
+                //Sua
+                height: 78,
                 backgroundColor: 'white',
             }} >
                 <View style={{
